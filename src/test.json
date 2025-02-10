@@ -1,0 +1,37 @@
+{
+  "characterName": "Hero123",
+  "familyName": "Smith",
+  "chestPieceSlot": {
+    "name": "Plate Armor",
+    "level": 5
+  },
+  "glovesSlot": {
+    "name": "Iron Gloves",
+    "level": 3
+  },
+  "bootsSlot": {
+    "name": "Leather Boots",
+    "level": 4
+  },
+  "helmetSlot": {
+    "name": "Steel Helmet",
+    "level": 2
+  },
+  "earringSlot1": {
+    "name": "Earring of Strength",
+    "level": 3
+  },
+  "earringSlot2": {
+    "name": "Earring of Agility",
+    "level": 4
+  },
+  "ringSlot1": {
+    "name": "Ring of Power",
+    "level": 2
+  },
+  "ringSlot2": {
+    "name": "Ring of Wisdom",
+    "level": 1
+  },
+  "crystals": ["Fire", "Water", "Earth"]
+}
