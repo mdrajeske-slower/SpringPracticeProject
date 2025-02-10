@@ -1,13 +1,18 @@
 package com.slower.springpractice.SpringPracticeProject.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+@Document
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class GearSlot {
-    private final String name;
-    private final int level;
+    @Field("Name")
+    private String name;
+
+    @Field("Level")
+    private int level;
 }

@@ -1,9 +1,6 @@
 package com.slower.springpractice.SpringPracticeProject.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -21,10 +18,10 @@ public class GearSheetDAO {
     private String id;
 
     @Field("CharacterName")
-    private final String characterName;
+    private String characterName;
 
     @Field("FamilyName")
-    private final String familyName;
+    private String familyName;
 
     @Field("ChestPiece")
     private GearSlot chestPieceSlot;
