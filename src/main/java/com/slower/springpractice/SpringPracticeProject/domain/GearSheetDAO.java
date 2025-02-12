@@ -35,6 +35,12 @@ public class GearSheetDAO {
     @Field("Helmet")
     private GearSlot helmetSlot;
 
+    @Field("Necklace")
+    private GearSlot necklace;
+
+    @Field("Belt")
+    private GearSlot belt;
+
     @Field("Earring1")
     private GearSlot earringSlot1;
 
