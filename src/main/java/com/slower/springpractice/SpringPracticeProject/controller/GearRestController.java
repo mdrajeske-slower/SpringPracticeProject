@@ -14,7 +14,7 @@ import java.util.List;
 public class GearRestController {
     private final GearService gearService;
 
-    @PostMapping("/new_gear_sheet")
+    @PostMapping("/gear_sheet")
     public void createNewGearSheet(@RequestBody GearSheetDAO gearSheet){
         gearService.addNewGearSheet(gearSheet);
     }
@@ -27,6 +27,7 @@ public class GearRestController {
                 .body(gearService.getGearSheets(familyName, characterName));
     }
 
+
     @GetMapping("/gear_piece")
     public ResponseEntity<GearPieceDAO> getGearPiece(
             @RequestParam(name = "name", required = true) String name){
@@ -34,13 +35,17 @@ public class GearRestController {
                 .body(gearService.getGearPiece(name));
     }
 
-    @DeleteMapping("/delete_gear_sheet/{id}")
-    public ResponseEntity<Void> deleteGearSheet(@PathVariable("id") String id){
-        gearService.deleteGearSheet(id);
+    @DeleteMapping("/gear_sheet")
+    public ResponseEntity<Void> deleteGearSheet(@RequestParam("family_name") String familyName, @RequestParam("character_name") String characterName){
+        gearService.deleteGearSheet(familyName, characterName);
         return ResponseEntity.noContent().build();
     }
 
-    //TODO: PUT mapping for updating a gear sheet
+    @PutMapping("/gear_sheet")
+    public void updateExistingGearSheet(
+            @RequestBody GearSheetDAO gearSheet){
+        gearService.updateGearSheet(gearSheet);
+    }
 
     @GetMapping("/calculate_stats")
     public ResponseEntity<List<StatSheet>> calculateGearSheetStats(

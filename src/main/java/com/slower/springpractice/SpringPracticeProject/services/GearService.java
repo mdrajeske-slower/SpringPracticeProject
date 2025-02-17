@@ -4,12 +4,16 @@ import com.slower.springpractice.SpringPracticeProject.domain.GearPieceDAO;
 import com.slower.springpractice.SpringPracticeProject.domain.GearSheetDAO;
 import com.slower.springpractice.SpringPracticeProject.domain.GearSlot;
 import com.slower.springpractice.SpringPracticeProject.domain.StatSheet;
+import com.slower.springpractice.SpringPracticeProject.exception.BadRequestException;
+import com.slower.springpractice.SpringPracticeProject.exception.ResourceNotFoundException;
 import com.slower.springpractice.SpringPracticeProject.repository.GearPieceRepository;
 import com.slower.springpractice.SpringPracticeProject.repository.GearSheetRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.ReadOnlyFileSystemException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,23 +26,54 @@ public class GearService {
     private final GearSheetRepository gearSheetRepo;
     private final GearPieceRepository gearPieceRepo;
 
+    @Transactional
     public GearSheetDAO addNewGearSheet(GearSheetDAO gearSheet){
+        List<GearSheetDAO> existingGearSheets = gearSheetRepo.findByFamilyNameAndCharacterName(
+                gearSheet.getFamilyName(), gearSheet.getCharacterName());
+        if(existingGearSheets != null && !existingGearSheets.isEmpty()){
+            throw new BadRequestException("Gear Sheet already exists.");
+        }
+        return gearSheetRepo.save(gearSheet);
+    }
+
+    @Transactional
+    public GearSheetDAO updateGearSheet(GearSheetDAO gearSheet){
+        List<GearSheetDAO> existingGearSheets = gearSheetRepo.findByFamilyNameAndCharacterName(
+                gearSheet.getFamilyName(), gearSheet.getCharacterName());
+        if(existingGearSheets == null || existingGearSheets.isEmpty()){
+            throw new ResourceNotFoundException("Gear Sheet not found.");
+        }
+
+        gearSheetRepo.deleteById(existingGearSheets.get(0).getId());
+
         return gearSheetRepo.save(gearSheet);
     }
 
     public List<GearSheetDAO> getGearSheets(String familyName, String characterName){
+        List<GearSheetDAO> gearSheets = new ArrayList<>();
         if(!characterName.isEmpty()) {
-            return gearSheetRepo.findByFamilyNameAndCharacterName(familyName, characterName);
+            gearSheets = gearSheetRepo.findByFamilyNameAndCharacterName(familyName, characterName);
         }
-        return gearSheetRepo.findByFamilyName(familyName);
+        else {
+            gearSheets = gearSheetRepo.findByFamilyName(familyName);
+        }
+        if(gearSheets == null || gearSheets.isEmpty()){
+            throw new ResourceNotFoundException("Gear Sheet not found.");
+        }
+        return gearSheets;
     }
 
     public GearPieceDAO getGearPiece(String name){
-        return gearPieceRepo.findByName(name);
+        GearPieceDAO gearPiece = gearPieceRepo.findByName(name);
+        if(gearPiece == null){
+            throw new ResourceNotFoundException("Gear Piece not found.");
+        }
+        return gearPiece;
     }
 
     public List<StatSheet> getStatSheets(String familyName, String characterName) {
-        return gearSheetRepo.findByFamilyNameAndCharacterName(familyName, characterName)
+        List<StatSheet> statSheets = new ArrayList<>();
+        statSheets = gearSheetRepo.findByFamilyNameAndCharacterName(familyName, characterName)
                 .stream()
                 .map(gearSheet -> {
                     Map<String, List<GearPieceDAO>> gearStats = Stream.of(
@@ -85,6 +120,10 @@ public class GearService {
                             .build();
                 })
                 .collect(Collectors.toList());
+        if(statSheets.isEmpty()){
+            throw new ResourceNotFoundException("Gear Sheet not found.");
+        }
+        return statSheets;
     }
 
     private int calculateDp(int level, List<GearPieceDAO> stats) {
@@ -96,7 +135,13 @@ public class GearService {
     }
 
 
-    public void deleteGearSheet(String id){
-        gearSheetRepo.deleteById(id);
+    @Transactional
+    public void deleteGearSheet(String familyName, String characterName){
+        List<GearSheetDAO> existingGearSheets = gearSheetRepo.findByFamilyNameAndCharacterName(
+                familyName, characterName);
+        if(existingGearSheets == null || existingGearSheets.isEmpty()){
+            throw new ResourceNotFoundException("Gear Sheet not found.");
+        }
+        gearSheetRepo.deleteById(existingGearSheets.get(0).getId());
     }
 }

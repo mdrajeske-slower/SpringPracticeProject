@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 public class GearSheetDAO {
     @Id
-    @Field("_id")
     private String id;
 
     @Field("CharacterName")

@@ -9,6 +9,5 @@ public interface GearSheetRepository extends MongoRepository<GearSheetDAO, Strin
     List<GearSheetDAO> findByFamilyName(String familyName);
 
     List<GearSheetDAO> findByFamilyNameAndCharacterName(String familyName, String characterName);
-
-    void deleteById(String Id);
+    void deleteById(String id);
 }
